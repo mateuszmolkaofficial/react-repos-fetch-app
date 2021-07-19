@@ -2,10 +2,12 @@ import { gql, useQuery } from '@apollo/client'
 import Table from 'components/Table'
 import { Column } from 'react-table'
 import { useMemo } from 'react'
+import { LoadingWrapper, TableWrapper } from './styles'
 
 export const ALL_REPOS_QUERY = gql`
   query allRepos {
-    search(query: "react", type: REPOSITORY, first: 10) {
+    search(query: "react", type: REPOSITORY, first: 100) {
+      codeCount
       nodes {
         ... on Repository {
           name
@@ -55,14 +57,18 @@ const ReactReposFetcher = () => {
   )
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoadingWrapper>Loading...</LoadingWrapper>
   }
 
   if (error) {
-    return <div>Something went wrong... Try again later</div>
+    return <LoadingWrapper>Something went wrong... Try again later</LoadingWrapper>
   }
 
-  return <Table data={data.search.nodes} columns={columns} />
+  return (
+    <TableWrapper>
+      <Table data={data.search.nodes} columns={columns} />
+    </TableWrapper>
+  )
 }
 
 export default ReactReposFetcher

@@ -6,7 +6,14 @@ import {
   usePagination,
 } from 'react-table'
 import { ReactElement } from 'react'
-import { TableWrapper, HeaderRow, HeaderCell, BodyCell, RowWrapper } from './styles'
+import {
+  TableWrapper,
+  HeaderRow,
+  HeaderCell,
+  BodyCell,
+  RowWrapper,
+  PaginationWrapper,
+} from './styles'
 
 interface TableProps<D extends Record<string, unknown>>
   extends TableOptions<D>,
@@ -16,7 +23,22 @@ const Table = <D extends Record<string, unknown>>({
   columns,
   data,
 }: TableProps<D>): ReactElement<TableProps<D>> => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<D>(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    prepareRow,
+
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    state: { pageIndex },
+  } = useTable<D>(
     {
       columns,
       data,
@@ -48,7 +70,7 @@ const Table = <D extends Record<string, unknown>>({
       <div {...getTableBodyProps()} data-test-id="table-body">
         {
           // Loop over the table rows
-          rows.map((row, index) => {
+          page.map((row, index) => {
             // Prepare the row for display
             prepareRow(row)
             return (
@@ -70,6 +92,28 @@ const Table = <D extends Record<string, unknown>>({
           })
         }
       </div>
+      <PaginationWrapper>
+        <div className="pagination">
+          <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            {'<<'}
+          </button>{' '}
+          <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            {'<'}
+          </button>{' '}
+          <button onClick={() => nextPage()} disabled={!canNextPage}>
+            {'>'}
+          </button>{' '}
+          <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+            {'>>'}
+          </button>{' '}
+        </div>
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+      </PaginationWrapper>
     </TableWrapper>
   )
 }

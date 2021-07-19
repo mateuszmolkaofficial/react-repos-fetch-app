@@ -12,16 +12,22 @@ declare module "react-table" {
     UseSortByHooks,
     UseSortByInstanceProps,
     UseSortByOptions,
+    UsePaginationInstanceProps,
+    UsePaginationState,
     UseSortByState,
   } from "react-table"
 
   export interface TableOptions<D extends object> extends UseSortByOptions<D> {}
+  // note that having Record here allows you to add anything to the options, this matches the spirit of the
+  // underlying js library, but might be cleaner if it's replaced by a more specific type that matches your
+  // feature set, this is a safe default.
+  // Record<string, any>
 
   export interface Hooks<D extends object = {}> extends UseSortByHooks<D> {}
 
-  export interface TableInstance<D extends object = {}> extends UseSortByInstanceProps<D> {}
+  export interface TableInstance<D extends object = {}> extends UsePaginationInstanceProps<D> {}
 
-  export interface TableState<D extends object = {}> extends UseSortByState<D> {}
+  export interface TableState<D extends object = {}> extends UsePaginationState<D> {}
 
   export interface ColumnInstance<D extends object = {}> extends UseSortByColumnProps<D> {}
 
